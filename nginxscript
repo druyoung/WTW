@@ -24,7 +24,7 @@ http {
         listen 3200;
         error_page 404 /404.html; 
         location = / {
-            proxy_pass    http://10.10.20.104:3001;
+            proxy_pass    http://localhost:3400;
             }
         location = /404.html {
             root   /var/www/html/errors;
