@@ -5,7 +5,7 @@ apt-get install -y nginx
 #NGINX should start if the host is restarted.
 systemctl enable nginx
 
-#Script should configure the host to allow traffice to NGINX
+#Script should configure the host to allow traffic to NGINX
 ufw allow 3200
 
 #Write an NGINX configuration for a new virtual host
