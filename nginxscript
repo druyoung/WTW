@@ -1,0 +1,47 @@
+#!/bin/bash
+#write a script to install NGINX on a debian based linux distribution such as Ubuntu
+apt-get install -y nginx
+
+#NGINX should start if the host is restarted.
+systemctl enable nginx
+
+#Script should configure the host to allow traffic to NGINX
+ufw allow 3200
+
+#Write an NGINX configuration for a new virtual host
+#Should listen to port 3200
+#Should proxy traffic from www.example.com and deliver it to a backend host named localhost on port 3400
+#Send all non www.example.com traffic to a custom 404 page
+mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.old
+cat > /etc/nginx/nginx.conf  <<EOF
+error_log /etc/nginx/error.log;
+events {
+    worker_connections 1024;
+    }
+http {
+    server {
+        server_name www.example.com;
+        listen 3200;
+        error_page 404 /404.html; 
+        location = / {
+            proxy_pass    http://localhost:3400;
+            }
+        location = /404.html {
+            root   /var/www/html/errors;
+            }
+        }
+    }
+EOF
+mkdir -p /var/www/html/errors/
+cat > /var/www/html/errors/404.html <<EOF
+<!DOCTYPE html>
+<html lang="en">
+    <head><title> 404 - Not Found!</title></head>
+    <body>
+        <h1> Yo!  File not found:  Please check the address</h1>
+    </body>
+<html>
+EOF
+
+#Restart NGINX
+systemctl restart nginx
